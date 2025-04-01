@@ -31,5 +31,5 @@ python -m venv .venv
 ## Authors
 - Theodor Semerdzhiev 261118892
 - Bohan Wang
-- Mike
+- Mikhail Lavrenov 261096558
 
