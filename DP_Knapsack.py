@@ -47,7 +47,7 @@ def solve_knapsack_dp(problem: Dict[str, Any]) -> Tuple[float, List[int]]:
     # Reverse the list to get items in original order
     selected_items.reverse()
     
-    return dp[n, capacity], selected_items
+    return float(dp[n, capacity]), selected_items
 
 
 def solve_KP_instances_with_DP(problem_instances:List[Dict[str, Any]]) -> Tuple[List[int], List[List[int]]]:
@@ -58,6 +58,7 @@ def solve_KP_instances_with_DP(problem_instances:List[Dict[str, Any]]) -> Tuple[
         opt_sol, opt_items = solve_knapsack_dp(instance)
         optimal_sols[i] = opt_sol
         optimal_sols_items[i] = opt_items
+    
     
     return optimal_sols, optimal_sols_items
     

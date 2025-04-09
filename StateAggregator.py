@@ -1,6 +1,6 @@
 
 
-# Just temporary for now, should be moved to seperate file
+# Just temporary for now, Mike this is your job 
 class StateAggregator:
     """
     State aggregator to reduce state space dimension.
