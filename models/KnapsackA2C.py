@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from typing import List, Tuple, Dict, Any, Callable, Union
 import random
-from AbstractKnapsackPolicy import AbstractKnapsackPolicy
+from models.AbstractKnapsackPolicy import AbstractKnapsackPolicy
 
 class PolicyNetwork(nn.Module):
     """Policy network for the A2C algorithm to solve the Knapsack Problem"""
@@ -263,7 +263,7 @@ class KnapsackA2C(AbstractKnapsackPolicy):
         
         # Update policy network (equation 2 in pseudocode)
         policy_output = self.policy_net(states_tensor)
-        action_probs = F.softmax(policy_output, dim=1)
+        # action_probs = F.softmax(policy_output, dim=1)
         
         # Extract probabilities of chosen actions
         action_log_probs = F.log_softmax(policy_output, dim=1)

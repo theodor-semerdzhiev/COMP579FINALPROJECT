@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import random
 from typing import List, Union, Tuple, Any
-from AbstractKnapsackPolicy import AbstractKnapsackPolicy
+from models.AbstractKnapsackPolicy import AbstractKnapsackPolicy
 from collections import deque
 
 

@@ -23,7 +23,7 @@ from util.instance_gen import KnapsackInstanceGenerator
 # ---------------------------------------------------------------------------
 # TODO: update this import to point at the file that defines KnapsackEnv.
 # ---------------------------------------------------------------------------
-from knapsackgym import KnapsackEnv  # noqa: F401 – replace as needed
+from gym.knapsackgym import KnapsackEnv  # noqa: F401 – replace as needed
 
 
 # ---------------------------------------------------------------------------

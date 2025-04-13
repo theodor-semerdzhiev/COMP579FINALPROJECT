@@ -42,7 +42,11 @@ def evaluate_knapsack_performance(trained_values: List[float],
         - 'mean_improvement_over_greedy': Mean relative improvement of RL over Greedy.
     """
     if not (len(trained_values) == len(dp_values) == len(greedy_values)):
-        raise ValueError("All input lists must have the same length.")
+        raise ValueError(f"""All input lists must have the same length.
+                         trained_values: {len(trained_values)},
+                         dp_values: {len(dp_values)},
+                         greedy_values: {len(greedy_values)}
+                         """)
     
     n = len(trained_values)
     

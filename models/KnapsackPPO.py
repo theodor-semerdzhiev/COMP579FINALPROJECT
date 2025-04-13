@@ -1,4 +1,4 @@
-from AbstractKnapsackPolicy import AbstractKnapsackPolicy
+from models.AbstractKnapsackPolicy import AbstractKnapsackPolicy
 import numpy as np
 import torch
 import torch.nn as nn
@@ -87,11 +87,12 @@ class PolicyNetworkPPO(nn.Module):
             if torch.sum(masked_probs) == 0:
                 return random.choice(available_actions)
 
-            # print(masked_probs)
-            # Normalize and sample
-            masked_probs = masked_probs / torch.sum(masked_probs)
-            # print(masked_probs)
+            masked_probs = torch.clamp(masked_probs, min=1e-10)  # Remove zeros/negatives
+            masked_probs = masked_probs / masked_probs.sum()  # Renormalize to sum to 1
             action = torch.multinomial(masked_probs, 1).item()
+
+            # masked_probs = masked_probs / torch.sum(masked_probs)
+            # action = torch.multinomial(masked_probs, 1).item()
 
             return action
     
