@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Dict, Any
 
-def solve_knapsack_dp(problem: Dict[str, Any]) -> Tuple[float, List[int]]:
+def solve_knapsack_dp(problem: Dict[str, Any]) -> Tuple[float, List[int], float]:
     """
     Solves the 0-1 Knapsack Problem using Dynamic Programming.
     
@@ -47,18 +47,24 @@ def solve_knapsack_dp(problem: Dict[str, Any]) -> Tuple[float, List[int]]:
     # Reverse the list to get items in original order
     selected_items.reverse()
     
-    return float(dp[n, capacity]), selected_items
+    total_weight = 0
+    for item in selected_items:
+        total_weight += weights[item]
+
+    return float(dp[n, capacity]), selected_items, float(total_weight)
 
 
-def solve_KP_instances_with_DP(problem_instances:List[Dict[str, Any]]) -> Tuple[List[int], List[List[int]]]:
-    optimal_sols = [0] * len(problem_instances)
+def solve_KP_instances_with_DP(problem_instances:List[Dict[str, Any]]) -> Tuple[List[List[int]], List[float], List[float]]:
+    optimal_values = [0] * len(problem_instances)
+    optimal_weight = [0] * len(problem_instances)
     optimal_sols_items = [None] * len(problem_instances)
 
     for i, instance in enumerate(problem_instances):
-        opt_sol, opt_items = solve_knapsack_dp(instance)
-        optimal_sols[i] = opt_sol
+        opt_sol, opt_items, opt_weight = solve_knapsack_dp(instance)
+        optimal_values[i] = opt_sol
+        optimal_weight[i] = opt_weight
         optimal_sols_items[i] = opt_items
     
     
-    return optimal_sols, optimal_sols_items
+    return optimal_sols_items, optimal_values, optimal_weight
     

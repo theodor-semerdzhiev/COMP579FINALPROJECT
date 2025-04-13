@@ -2,9 +2,9 @@ from __future__ import annotations
 
 """knapsack_instance_generator.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Utility for generating synthetic 0‑1 Knapsack problem instances.
+Utility for generating synthetic 0-1 Knapsack problem instances.
 
-Implements the three instance families described in Refaei‑Afshar et al. (2020):
+Implements the three instance families described in Refaei-Afshar et-al. (2020):
 
 * **RI** – Random Instances
 * **FI** – Fixed‑capacity, fixed‑size Instances
@@ -95,14 +95,14 @@ class KnapsackInstanceGenerator:
         """
 
         rng = self._get_rng(seed)
-        inst: List[KnapsackInstance] = []
+        inst: List[Dict[str, Any]] = []
         for _ in range(M):
             n_items = int(rng.integers(1, N + 1))
             weights = rng.integers(1, R + 1, size=n_items)
             values = rng.integers(1, R + 1, size=n_items)
             capacity = int(rng.integers(max(1, R // 10), 3 * R + 1))
             inst.append(
-                KnapsackInstance(values.tolist(), weights.tolist(), capacity)
+                KnapsackInstance(values.tolist(), weights.tolist(), capacity).to_dict()
             )
         return inst
 
@@ -138,12 +138,12 @@ class KnapsackInstanceGenerator:
                 capacity = 0.25 * N
 
         rng = self._get_rng(seed)
-        inst: List[KnapsackInstance] = []
+        inst: List[Dict[str, Any]] = []
         for _ in range(M):
             weights = rng.random(N)
             values = rng.random(N)
             inst.append(
-                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity))
+                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity)).to_dict()
             )
         return inst
 
@@ -168,13 +168,13 @@ class KnapsackInstanceGenerator:
         """
 
         rng = self._get_rng(seed)
-        inst: List[KnapsackInstance] = []
+        inst: List[Dict[str, Any]] = []
         for p in range(1, M + 1):
             weights = rng.integers(1, R + 1, size=N)
             values = weights + R / 10.0
             capacity = (p / (M + 1)) * weights.sum()
             inst.append(
-                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity))
+                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity)).to_dict()
             )
         return inst
 
@@ -199,13 +199,13 @@ class KnapsackInstanceGenerator:
         """
 
         rng = self._get_rng(seed)
-        inst: List[KnapsackInstance] = []
+        inst: List[Dict[str, Any]] = []
         for _ in range(M):
             weights = rng.integers(1, R + 1, size=N)
             values = weights.copy()
             capacity = 0.5 * weights.sum()
             inst.append(
-                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity))
+                KnapsackInstance(values.tolist(), weights.tolist(), float(capacity)).to_dict()
             )
         return inst
 

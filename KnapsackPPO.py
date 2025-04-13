@@ -87,8 +87,10 @@ class PolicyNetworkPPO(nn.Module):
             if torch.sum(masked_probs) == 0:
                 return random.choice(available_actions)
 
+            # print(masked_probs)
             # Normalize and sample
             masked_probs = masked_probs / torch.sum(masked_probs)
+            # print(masked_probs)
             action = torch.multinomial(masked_probs, 1).item()
 
             return action

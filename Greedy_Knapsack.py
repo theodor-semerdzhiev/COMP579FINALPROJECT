@@ -1,5 +1,6 @@
+from typing import List, Callable, Optional, Union, Tuple, Dict, Any
 
-def greedy_knapsack(problem_instance: dict) -> tuple:
+def greedy_knapsack(problem_instance: Dict) -> Tuple[List[int], float, float]:
     """
     Solve a 0-1 knapsack instance using a simple greedy strategy:
     1. Compute value-to-weight ratio for each item.
@@ -19,9 +20,9 @@ def greedy_knapsack(problem_instance: dict) -> tuple:
                and total_weight is the sum of the chosen items' weights.
     """
 
-    values = problem_instance['values']
-    weights = problem_instance['weights']
-    capacity = problem_instance['capacity']
+    values:List[int] = problem_instance['values']
+    weights:List[int] = problem_instance['weights']
+    capacity:float = problem_instance['capacity']
 
     # Build a list of (original_index, value, weight, ratio)
     # Avoid division by zero for items with weight == 0
@@ -33,8 +34,8 @@ def greedy_knapsack(problem_instance: dict) -> tuple:
     # Sort by value-to-weight ratio in descending order
     items.sort(key=lambda x: x[3], reverse=True)
 
-    selected_items = []
-    remaining_capacity = capacity
+    selected_items:List[int] = []
+    remaining_capacity:float = capacity
     total_value = 0.0
 
     # Greedily pick items
@@ -45,10 +46,9 @@ def greedy_knapsack(problem_instance: dict) -> tuple:
             total_value += v
 
     total_weight = capacity - remaining_capacity
-
     return (selected_items, total_value, total_weight)
 
-def solve_problem_instances_greedy(problem_instances: list) -> tuple:
+def solve_problem_instances_greedy(problem_instances: list) -> Tuple[List[float], List[List[int]], List[float]]:
     """
     Takes a list of knapsack problem instances and solves each of them
     with the greedy algorithm.
@@ -65,9 +65,9 @@ def solve_problem_instances_greedy(problem_instances: list) -> tuple:
             - list_of_items_chosen: A list of lists, each containing the indices of chosen items
             - list_of_weights: A list of total weights (floats) for each instance
     """
-    all_values = []
-    all_chosen_items = []
-    all_weights = []
+    all_values:List[float] = []
+    all_chosen_items:List[List[int]] = []
+    all_weights:List[float] = []
 
     for instance in problem_instances:
         selected_items, total_value, total_weight = greedy_knapsack(instance)
