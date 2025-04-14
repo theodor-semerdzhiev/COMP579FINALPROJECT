@@ -78,7 +78,7 @@ def evaluate_knapsack_performance(trained_values: List[float],
     performance_metrics = {
         # Aggregated metrics similar to your table
         'N': n,
-        'Val': total_rl_value,
+        'AveragedVal': total_rl_value / len(trained_values),
         '#opt': count_opt,
         '#highest': count_highest,
         'ValOptRatio': val_ratio,

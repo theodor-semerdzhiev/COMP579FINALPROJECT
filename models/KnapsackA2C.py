@@ -97,7 +97,7 @@ class PolicyNetwork(nn.Module):
                 state_tensor = torch.FloatTensor(state).unsqueeze(0)
             else:
                 state_tensor = state.unsqueeze(0) if state.dim() == 1 else state
-                
+            
             action_probs = F.softmax(self.forward(state_tensor), dim=1)
             
             # Mask unavailable actions
@@ -237,6 +237,7 @@ class KnapsackA2C(AbstractKnapsackPolicy):
         dones_tensor = torch.FloatTensor(dones)
         
         # Compute state values
+        # print(states_tensor)
         state_values = self.value_net(states_tensor).squeeze()
         next_state_values = self.value_net(next_states_tensor).squeeze()
         

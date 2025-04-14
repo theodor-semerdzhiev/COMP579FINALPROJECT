@@ -1,10 +1,12 @@
-from gym.knapsackgym import KnapsackEnv
+from environment.knapsackgym import KnapsackEnv
 from models.AbstractKnapsackPolicy import AbstractKnapsackPolicy
 from models.StateAggregator import StateAggregator
 from typing import List, Callable, Optional, Union, Tuple, Dict, Any
 from models.DP_Knapsack import solve_knapsack_dp, solve_KP_instances_with_DP
 import numpy as np
 from models.Greedy_Knapsack import greedy_knapsack, solve_problem_instances_greedy
+
+from numpy._typing import NDArray
 
 class KnapsackDRLSolver:
     """DRL-based Knapsack Solver using A2C algorithm"""
@@ -89,7 +91,7 @@ class KnapsackDRLSolver:
             state = self.env.reset()
             
             # Initialize for this episode
-            done = False
+            done_ = False
             ow = 0  # Total weight of selected items
             ov = 0  # Total value of selected items
             
@@ -110,7 +112,7 @@ class KnapsackDRLSolver:
             total_episode_reward_sum = 0
             
             # Solve the knapsack problem for this instance
-            while ow < W_P_prime and n_P_prime > 0 and not done:
+            while not done_:
                 # Process state if needed
                 processed_state = self.process_state(state)
                 states.append(processed_state)
@@ -130,18 +132,14 @@ class KnapsackDRLSolver:
                 next_states.append(next_state)
                 dones.append(done)
                 
-                # Check if item fits in knapsack (line 13 in pseudocode)
-                if action < n_P_prime and info['current_weight'] - ow <= W_P_prime:
-                    # Update totals (line 14 in pseudocode)
-                    ow = info['current_weight']
-                    ov = info['current_value']
-                    W_P_prime = P['capacity'] - ow
-                
-                # Update P_prime (line 16 in pseudocode)
-                n_P_prime -= 1
+                # Update the current value
+                ov = info['current_value']
                 
                 # Update state
                 state = next_state
+
+                # Update flag
+                done_ = done 
             
             # Update parameters using collected trajectories
             if t % param_update_ticker == 0:
@@ -211,15 +209,13 @@ class KnapsackDRLSolver:
             # Get action according to policy
             action = self.KPsolver.get_action(processed_state, available_actions)
             
-            # Get original item index (before any removal)
-            original_item_idx = self.env.items[action][2]
-            
             # Take action and observe reward and next state
             next_state, reward, done, info = self.env.step(action)
             
             # If item was added (positive reward means item fit)
             if reward > 0:
-                selected_items.append(original_item_idx)
+                assert info['item'] != None
+                selected_items.append(info['item'][2])
             
             # Update value and weight
             total_value = info['current_value']
@@ -229,8 +225,6 @@ class KnapsackDRLSolver:
             state = next_state
         
         return total_value, total_weight, selected_items
-    
-
 
 def train_knapsack_solver(env, problem_instances:List[Dict[str, Any]], KPsolver, use_state_aggregation=False, t_max=None, verbose=True):
     """
@@ -251,7 +245,7 @@ def train_knapsack_solver(env, problem_instances:List[Dict[str, Any]], KPsolver,
     """
     # Initialize solver
     solver = KnapsackDRLSolver(
-        env=env,
+         env=env,
         KPsolver=KPsolver,
         use_state_aggregation=use_state_aggregation,
         verbose=verbose
@@ -304,7 +298,8 @@ def evaluate_knapsack_solver(solver:KnapsackDRLSolver, test_instances:list[dict]
     return results
 
 def run_KPSolver(env:KnapsackEnv, KPSolver:KnapsackDRLSolver, 
-                 training_problem_instances: List[Dict[str, Any]], t_max:int=None) -> Dict[str, Any]:
+                 training_problem_instances: List[Dict[str, Any]], t_max:int=None, 
+                 use_state_aggregation:bool=False, verbose:bool=True) -> Tuple[KnapsackDRLSolver, Dict[str, NDArray[np.float64]]]:
     
     print(f"Running Model {KPSolver.__class__}")
     
@@ -313,12 +308,12 @@ def run_KPSolver(env:KnapsackEnv, KPSolver:KnapsackDRLSolver,
         env=env,
         problem_instances=training_problem_instances,
         KPsolver=KPSolver,
-        use_state_aggregation=False,
+        use_state_aggregation=use_state_aggregation,
         t_max=t_max,
-        verbose=True
+        verbose=verbose
     )
     
-    return solution_values
+    return solver, solution_values
 
 
 def print_results(results:list):
