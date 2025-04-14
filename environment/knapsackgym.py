@@ -165,8 +165,6 @@ class KnapsackEnv(gym.Env):
         # Fill in item data for remaining items (left-aligned)
         for i, (v, w, idx) in enumerate(self.items):
             pos = 2 * i
-            # state[pos] = v
-            # state[pos + 1] = w
             state[pos] = self.normalized_values[idx]
             state[pos + 1] = self.normalized_weights[idx]
             
