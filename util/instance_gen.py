@@ -54,7 +54,7 @@ class KnapsackInstance:
 
 
 class KnapsackInstanceGenerator:
-    """API class that creates families of 0‑1 knapsack instances."""
+    """API class that creates families of 0-1 knapsack instances."""
 
     def __init__(self, seed: int | None = None):
         """Create a new generator.
@@ -88,10 +88,10 @@ class KnapsackInstanceGenerator:
     ) -> List[KnapsackInstance]:
         """Random Instances (RI).
 
-        Each instance *p* has a random number of items *nₚ ∈ [1, N]*. For every item
+        Each instance *p* has a random number of items *nₚ ∈ [1, N]*. For every item
         ``i`` we sample an integer weight ``wᵢ`` and value ``vᵢ`` uniformly from
-        ``[1, R]``. The knapsack capacity ``Wₚ`` is an integer drawn uniformly from
-        ``[R/10, 3R]``.
+        ``[1, R]``. The knapsack capacity ``Wₚ`` is an integer drawn uniformly from
+        ``[R/10, 3R]``.
         """
 
         rng = self._get_rng(seed)
@@ -118,7 +118,7 @@ class KnapsackInstanceGenerator:
         capacity: float | None = None,
         seed: int | None = None,
     ) -> List[KnapsackInstance]:
-        """Fixed‑capacity, fixed‑size Instances (FI).
+        """Fixed-capacity, fixed-size Instances (FI).
 
         * Exactly *N* items per instance.
         * ``vᵢ, wᵢ`` ∼ *U(0, 1)* (continuous).
@@ -159,9 +159,9 @@ class KnapsackInstanceGenerator:
         *,
         seed: int | None = None,
     ) -> List[KnapsackInstance]:
-        """Hard (strongly‑correlated) Instances (HI).
+        """Hard (strongly-correlated) Instances (HI).
 
-        For instance index *p* (1‑based):
+        For instance index *p* (1-based):
         * ``wᵢ`` ∼ *U{1, R}*
         * ``vᵢ = wᵢ + R/10`` (strong correlation)
         * ``Wₚ = (p / (M + 1)) · Σwᵢ``
@@ -179,7 +179,7 @@ class KnapsackInstanceGenerator:
         return inst
 
     # -------------------------------------------------------------------
-    # Creative extension: SS – Subset‑Sum‑like instances
+    # Creative extension: SS – Subset-Sum-like instances
     # -------------------------------------------------------------------
 
     def generate_subset_sum_instances(
@@ -190,10 +190,10 @@ class KnapsackInstanceGenerator:
         *,
         seed: int | None = None,
     ) -> List[KnapsackInstance]:
-        """Subset‑Sum‑like (SS) instances.
+        """Subset-Sum-like (SS) instances.
 
-        Designed to sit close to the NP‑complete subset‑sum boundary:
-        * ``wᵢ`` ∼ *U{1, R}*
+        Designed to sit close to the NP-complete subset-sum boundary:
+        * ``wᵢ`` ~ *U{1, R}*
         * ``vᵢ = wᵢ`` (perfect correlation)
         * ``W = ½ · Σwᵢ``
         """
