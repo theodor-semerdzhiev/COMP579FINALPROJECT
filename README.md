@@ -49,9 +49,9 @@ This diagram illustrates the overall flow of the training pipeline:
 ![Flow Diagram](docs/flowchart.png)
 
 > Components:
-> - `knapsackgym.py` defines the environment.
-> - `KnapsackDRLSolver.py` manages training and evaluation.
-> - `AbstractKnapsackPolicy.py` is extended by each RL agent (A2C, PPO, DQN).
+> - `knapsackEnv(knapsackgym.py)` defines the environment.
+> - `DRLSolver(KnapsackDRLSolver.py)` manages training and evaluation.
+> - `A2C/DQN/PPO(AbstractKnapsackPolicy.py)` is extended by each RL agent (A2C, PPO, DQN).
 > - Each model logs checkpoints and performance.
 
 ---
