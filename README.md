@@ -46,7 +46,7 @@ This project applies Deep Reinforcement Learning (DRL) techniques to solve the c
 
 This diagram illustrates the overall flow of the training pipeline:
 
-![Flow Diagram](docs/flowchart.png)
+<img src="docs/flowchart.png" width="200" alt="Flow Diagram">
 
 > Components:
 > - `knapsackEnv(knapsackgym.py)` defines the environment.
@@ -60,7 +60,7 @@ This diagram illustrates the overall flow of the training pipeline:
 
 The following UML diagram shows how the main components and classes interact:
 
-![UML Diagram](docs/uml_diagram.png)
+<img src="docs/uml_diagram.png" width="600" alt="UML Diagram">
 
 > Arrows indicate class dependency and usage relationships.
 
