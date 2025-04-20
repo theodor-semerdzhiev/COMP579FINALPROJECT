@@ -28,22 +28,23 @@ class KnapsackDRLSolver:
         self.use_state_aggregation = use_state_aggregation
         
         # Initialize state aggregator if needed
-        self.state_aggregator = StateAggregator() if use_state_aggregation else None
+        self.state_aggregator = StateAggregator(self.N) if use_state_aggregation else None
         self.KPsolver = KPsolver
         self.verbose = verbose
         
-    def process_state(self, state):
+    def process_state(self, state, P_idx=None):
         """
         Process state with optional aggregation.
         
         Args:
             state (numpy.ndarray): Original state
+            P_idx (int): Problem index
             
         Returns:
             numpy.ndarray: Processed state
         """
         if self.use_state_aggregation and self.state_aggregator is not None:
-            return self.state_aggregator.aggregate(state)
+            return self.state_aggregator.aggregate(state, P_idx)
         return state
     
     def train(self, problem_instances, t_max=None, param_update_ticker=1):
@@ -66,6 +67,9 @@ class KnapsackDRLSolver:
 
         if t_max is None:
             t_max = 3 * self.N * 10000  # As specified in the pseudocode
+
+        if self.use_state_aggregation:
+            self.state_aggregator.train(problem_instances, self.N)
         
         # Initialize tracking variables
         val = np.zeros(len(problem_instances))  # Best values for each problem instance
@@ -114,7 +118,7 @@ class KnapsackDRLSolver:
             # Solve the knapsack problem for this instance
             while not done_:
                 # Process state if needed
-                processed_state = self.process_state(state)
+                processed_state = self.process_state(state, P_idx)
                 states.append(processed_state)
                 
                 # Get available actions (indices of remaining items)
