@@ -54,9 +54,13 @@ def evaluate_knapsack_performance(trained_values: List[float],
     # Total value (sum) of RL and DP solutions
     total_rl_value = sum(trained_values)
     total_dp_value = sum(dp_values)
+    total_gr_value = sum(greedy_values)
     
     # Count instances where RL solution equals the optimal DP solution
     count_opt = sum(1 for rl, dp in zip(trained_values, dp_values) if rl == dp)
+
+    # Count instances where the greedy solution equals the optimal DP solution
+    count_gr_opt = sum(1 for gr, dp in zip(greedy_values, dp_values) if gr == dp)
     
     # Count instances where RL solution is at least as high as both DP and Greedy solutions
     # (Change >= to > if you require strictly higher values.)
@@ -67,6 +71,9 @@ def evaluate_knapsack_performance(trained_values: List[float],
     
     # Ratio of total RL value to total DP value, expressed as a percentage.
     val_ratio = (total_rl_value / total_dp_value * 100.0) if total_dp_value != 0 else 0.0
+
+    # Ratio of total greedy value to total DP value, expressed as a percentage.
+    val_gr_ratio = (total_gr_value / total_dp_value * 100.0) if total_dp_value != 0 else 0.0
     
     # Detailed Error Metrics
     abs_errors = [abs(rl - dp) for rl, dp in zip(trained_values, dp_values)]
@@ -82,6 +89,9 @@ def evaluate_knapsack_performance(trained_values: List[float],
         '#opt': count_opt,
         '#highest': count_highest,
         'ValOptRatio': val_ratio,
+        'ValGROptRatio': val_gr_ratio,
+        '#gr_opt': count_gr_opt,
+        'AveragedGrVal': total_gr_value / len(greedy_values),
         # Detailed error metrics
         'mean_absolute_error': np.mean(abs_errors),
         'min_absolute_error': np.min(abs_errors),
