@@ -83,16 +83,32 @@ class PolicyNetworkPPO(nn.Module):
 
             masked_probs = action_probs * action_mask
 
+            # Turn any NaNs into zeros
+            masked_probs = torch.nan_to_num(masked_probs, nan=0.0, posinf=0.0, neginf=0.0)
+
             # If all actions are masked, choose randomly
             if torch.sum(masked_probs) == 0:
                 return random.choice(available_actions)
 
-            masked_probs = torch.clamp(masked_probs, min=1e-10)  # Remove zeros/negatives
-            masked_probs = masked_probs / masked_probs.sum()  # Renormalize to sum to 1
-            action = torch.multinomial(masked_probs, 1).item()
+            # masked_probs = torch.clamp(masked_probs, min=1e-10)  # Remove zeros/negatives
+            total = masked_probs.sum()
+            # if not torch.isfinite(total).all():
+            #     print(masked_probs, torch.sum(masked_probs), state_tensor, logits, action_probs, action_mask)
 
-            # masked_probs = masked_probs / torch.sum(masked_probs)
-            # action = torch.multinomial(masked_probs, 1).item()
+            if total.item() == 0.0:
+                # index of allowed actions
+                allowed = masked_probs.nonzero(as_tuple=False).squeeze(1)
+                # pick one uniformly at random
+                return int(allowed[torch.randint(len(allowed), (1,))])
+            
+            masked_probs_ = masked_probs / total # Renormalize to sum to 1
+
+            # if not torch.isfinite(masked_probs).all():
+            #     # print("Non-finite probs:", masked_probs[~torch.isfinite(masked_probs)])
+            #     print(total, masked_probs_, masked_probs)
+
+            action = torch.multinomial(masked_probs_, 1).item()
+
 
             return action
     

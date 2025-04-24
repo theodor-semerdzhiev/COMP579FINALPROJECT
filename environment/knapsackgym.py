@@ -47,7 +47,8 @@ class KnapsackEnv(gym.Env):
 
     def __init__(self, problem_instance: dict[str, Any], N=100,
                  positive_reward_function:Callable[[float, float,float], float]=vr_i_positive_reward,
-                 negative_reward_function:Callable[[float, float,float], float]=wr_i_negative_reward
+                 negative_reward_function:Callable[[float, float,float], float]=wr_i_negative_reward,
+                 pad_meta_data_at_back:bool=True
                  ):
         """
         Initialize the Knapsack environment with a single problem instance.
@@ -59,10 +60,13 @@ class KnapsackEnv(gym.Env):
                 - 'capacity': float (max knapsack capacity)
             
                 N: Max number of items that a knapsack can have
+                positive_reward_function: Reward function when we have a positive reward
+                negative_reward_function: Reward function when we have a negative reward
+                pad_meta_data_at_back: wehther we should put the weight, value sums, etc, at the back of state tensor or right after the values and weights
         """
 
         self.N = N
-        self.problem_instance = self.change_problem_instance(problem_instance) if problem_instance else None
+        self.problem_instance = self.change_problem_instance(problem_instance) if problem_instance != None else None
 
         # Internal tracking
         # We'll store (value, weight, idx) so we know which normalized entry to use.
@@ -74,6 +78,7 @@ class KnapsackEnv(gym.Env):
         self.current_value_sum = self.total_weight if problem_instance else 0
         self.done = False
         self.best_value = 0.0
+        self.pad_meta_data_at_back=pad_meta_data_at_back
 
         if positive_reward_function is None: raise ValueError("Positive reward MUST be defined")
         if negative_reward_function is None: raise ValueError("Negative reward MUST be defined")
@@ -134,6 +139,8 @@ class KnapsackEnv(gym.Env):
             dtype=np.float32
         )
 
+        return self.problem_instance
+
     def reset(self) -> np.ndarray:
         """
         Reset the environment state and return the initial observation.
@@ -163,16 +170,24 @@ class KnapsackEnv(gym.Env):
         state = np.zeros(2 * self.N + 4, dtype=np.float32)
 
         # Fill in item data for remaining items (left-aligned)
+
         for i, (v, w, idx) in enumerate(self.items):
-            pos = 2 * i
+            offset = 0 if self.pad_meta_data_at_back else 4
+            pos = offset + 2 * i
             state[pos] = self.normalized_values[idx]
             state[pos + 1] = self.normalized_weights[idx]
             
         # The last 4 features
-        state[-4] = self.capacity
-        state[-3] = self.current_value_sum
-        state[-2] = self.current_weight_sum
-        state[-1] = len(self.items)
+        if self.pad_meta_data_at_back:
+            state[-4] = self.capacity
+            state[-3] = self.current_value_sum
+            state[-2] = self.current_weight_sum
+            state[-1] = len(self.items)
+        else:
+            state[0] = self.capacity
+            state[1] = self.current_value_sum
+            state[2] = self.current_weight_sum
+            state[3] = len(self.items)
 
         return state
 
@@ -185,6 +200,7 @@ class KnapsackEnv(gym.Env):
           3) Remove the item from self.items in all cases (shifting the state).
         End the episode if no items remain or if capacity is exhausted.
         """
+        # print(self.problem_instance)
         assert self.problem_instance is not None, "KP Problem Intance is None, it has not been set!"
         reward = 0.0
         item_picked = None
@@ -297,7 +313,7 @@ def run_episode_test(env:KnapsackEnv, policy=None, render=False, max_ite = None)
     return total_reward, info
 
 
-# Example usage:
+# # Example usage:
 # def main() -> None:
 #     # Define a simple problem instance
 #     problem_instance = {
@@ -308,6 +324,7 @@ def run_episode_test(env:KnapsackEnv, policy=None, render=False, max_ite = None)
 
 #     # Create the Knapsack environment (assuming KnapsackEnv is already defined)
 #     env = KnapsackEnv(problem_instance, N=3)
+    
 
 #     # Run an episode using a random policy (since no policy is provided)
 #     total_reward, final_info = run_episode_test(env, render=True)
