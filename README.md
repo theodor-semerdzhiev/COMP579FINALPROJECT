@@ -73,6 +73,7 @@ The following UML diagram shows how the main components and classes interact:
 git clone https://github.com/theodor-semerdzhiev/COMP579FINALPROJECT.git
 cd COMP579FINALPROJECT
 ```
+(if applicable)
 
 ### 2. Create a Python Virtual Environment
 
@@ -100,6 +101,7 @@ python -m venv .venv
 ```bash
 pip install -r requirements.txt
 ```
+If you dont have them installed
 
 ### 4. Run Training or Experiments
 
@@ -107,10 +109,7 @@ You can explore experiments interactively:
 - `solver/KnapsackDRLSolverTest.ipynb`
 - `experiments/experiment_table1.ipynb`
 
-Or run training directly:
-```bash
-python solver/KnapsackDRLSolver.py
-```
+We created a jupyter notebook shows how the code is run, you can go to experiments/demo_experiment.ipynb. 
 
 ---
 

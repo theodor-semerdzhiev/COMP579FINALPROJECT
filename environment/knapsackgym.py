@@ -170,8 +170,10 @@ class KnapsackEnv(gym.Env):
         state = np.zeros(2 * self.N + 4, dtype=np.float32)
 
         # Fill in item data for remaining items (left-aligned)
+
         for i, (v, w, idx) in enumerate(self.items):
-            pos = 2 * i
+            offset = 0 if self.pad_meta_data_at_back else 4
+            pos = offset + 2 * i
             state[pos] = self.normalized_values[idx]
             state[pos + 1] = self.normalized_weights[idx]
             
@@ -182,10 +184,10 @@ class KnapsackEnv(gym.Env):
             state[-2] = self.current_weight_sum
             state[-1] = len(self.items)
         else:
-            state[2*len(self.items)] = self.capacity
-            state[2*len(self.items) + 1] = self.current_value_sum
-            state[2*len(self.items) + 2] = self.current_weight_sum
-            state[2*len(self.items) + 3] = len(self.items)
+            state[0] = self.capacity
+            state[1] = self.current_value_sum
+            state[2] = self.current_weight_sum
+            state[3] = len(self.items)
 
         return state
 
