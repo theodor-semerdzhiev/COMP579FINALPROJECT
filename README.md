@@ -34,7 +34,7 @@ This project applies Deep Reinforcement Learning (DRL) techniques to solve the c
 │   ├── KnapsackDRLSolver.py       # Solver that coordinates training + evaluation
 │
 ├── experiments/
-│   └── experiment.ipynb           # Final experiments and result analysis
+│   
 │
 ├── requirements.txt               # Python dependencies
 └── README.md                      # This file
@@ -105,11 +105,9 @@ If you dont have them installed
 
 ### 4. Run Training or Experiments
 
-You can explore experiments interactively:
-- `solver/KnapsackDRLSolverTest.ipynb`
-- `experiments/experiment_table1.ipynb`
-
 We created a jupyter notebook shows how the code is run, you can go to experiments/demo_experiment.ipynb. 
+All the results for table1, in our report, is ./experiments/table1. These experiments take a long time, so we had to run things in concurently. 
+General rule of thumb is that .py files are implementation, and all jupyter notebooks are experiments or artifacts from testing.
 
 ---
 
